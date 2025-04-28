@@ -9,6 +9,7 @@ import com.watermeter.usage.repository.WaterUsesRepository;
 import com.watermeter.usage.service.EmailService;
 import com.watermeter.usage.service.HouseholdService;
 import com.watermeter.usage.service.WaterUsageService;
+import com.watermeter.usage.serviceimpl.HouseholdServiceImpl;
 import com.watermeter.usage.serviceimpl.WaterUsageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,13 +41,14 @@ Household household = new Household();
     LoginRespository loginRepository;
 
 
+
     @PostMapping("/loginwithrole")
     public ResponseEntity<String> login(
             @RequestParam String userName,
             @RequestParam String passWord,
             @RequestParam String role
     ) {
-        Optional<Login> user = loginRepository.findByUserNameAndPassWordAndRole(userName,passWord,role);
+        Optional<Login> user = loginRepository.findByUserNameAndPassWordAndRole(userName, passWord, role);
 
         if (user.isPresent()) {
             return ResponseEntity.ok("Login successful as " + role);
@@ -54,7 +58,51 @@ Household household = new Household();
     }
 
 
+//    @PostMapping("/loginwithrole")
+//    public ResponseEntity<Map<String, Object>> login(
+//            @RequestParam String userName,
+//            @RequestParam String passWord,
+//            @RequestParam String role
+//    ) {
+//        Optional<Login> user = loginRepository.findByUserNameAndPassWordAndRole(userName, passWord, role);
+//
+//        // If user is found
+//        if (user.isPresent()) {
+//            Login login = user.get();
+//
+//            // Prepare response data
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("id", login.getHousehold().getId());
+//            response.put("message", "Login successful");
+//            response.put("username", login.getUserName());
+//            response.put("role", login.getRole());
+//
+//
+////            // Check if the role is "household" and get the householdId
+////            if ("household".equals(login.getRole())) {
+////                Household household = login.getHousehold(); // Assuming Login entity has a reference to Household
+////                if (household != null) {
+////                    response.put("householdId", household.getId());  // Get the household ID
+////                }
+////            }
+//
+//            return ResponseEntity.ok(response);
+//        } else {
+//            // If credentials are invalid
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials or role"));
+//        }
+//    }
+
 @Autowired
+    HouseholdServiceImpl householdServiceimpl;
+
+    @GetMapping("/getHouseholdByUsername/{username}")
+    public ResponseEntity<?> getCustomerByAccountNumber(@PathVariable String username) {
+        return householdServiceimpl.getHouseholdByUsername(username);
+    }
+
+
+    @Autowired
 HouseholdRepository householdRepository;
 
 
@@ -68,6 +116,14 @@ HouseholdRepository householdRepository;
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting household: " + e.getMessage());
         }
+    }
+
+
+
+    @GetMapping("/waterUsage/{householdId}")
+    public ResponseEntity<List<WaterUsage>> getUsageByHousehold(@PathVariable Long householdId) {
+        List<WaterUsage> usageList = waterUsageService.getUsageByHouseholdId(householdId);
+        return ResponseEntity.ok(usageList);
     }
 
 
@@ -90,10 +146,14 @@ Household addHousehold = householdService.createHousehold(household);
 @Autowired
     WaterUsesRepository usageRepo;
 
-    @PostMapping("/{householdId}")
+
+
+    @PostMapping("/addWaterUsage/{householdId}")
     public WaterUsage recordUsage(@PathVariable Long householdId, @RequestBody WaterUsage usage) {
         return usageService.recordUsage(householdId, usage);
     }
+
+
 
     @GetMapping("/getAllHouseholds")
     public List<Household> getAllHouseholds() {

@@ -1,5 +1,6 @@
 package com.watermeter.usage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class WaterUsage {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "household_id")
+    @JsonBackReference
     private Household household;
 
 

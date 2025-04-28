@@ -17,15 +17,16 @@ public class Login {
 
     @OneToOne
     @JoinColumn(name = "Household_Id", referencedColumnName = "id")
-    @JsonBackReference // Prevent serialization of this field (avoid circular reference)
+    @JsonBackReference
     private Household household;
 
     public Long getId() {
         return id;
     }
 
+
     public void setId(Long id) {
-        id = id;
+        this.id = id;
     }
 
     public String getUserName() {
@@ -64,7 +65,7 @@ public class Login {
     @Override
     public String toString() {
         return "Login{" +
-                "Id=" + id +
+                "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 ", role='" + role + '\'' +

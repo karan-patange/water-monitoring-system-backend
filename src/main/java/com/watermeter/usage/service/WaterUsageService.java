@@ -12,4 +12,6 @@ public interface WaterUsageService {
 
 
 
+
+    public List<WaterUsage> getUsageByHouseholdId(Long householdId);
 }

@@ -33,12 +33,7 @@ public class WaterUsageServiceImpl implements WaterUsageService {
         return usageRepo.save(usage);
     }
 
-//    @Override
-//    public List<WaterUsage> getUsageByHousehold(Long householdId) {
-//        Household household = householdRepo.findById(householdId)
-//                .orElseThrow(() -> new RuntimeException("Household not found"));
-//        return usageRepo.findByHousehold(household);
-//    }
+
 
     @Override
     public List<WaterUsage> getAllUsage() {
@@ -47,8 +42,9 @@ public class WaterUsageServiceImpl implements WaterUsageService {
 
 
 
-
-
-
+@Override
+    public List<WaterUsage> getUsageByHouseholdId(Long householdId) {
+        return usageRepo.findByHouseholdId(householdId);
+    }
 
 }

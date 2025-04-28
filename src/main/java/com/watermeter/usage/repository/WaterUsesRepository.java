@@ -19,4 +19,9 @@ public interface WaterUsesRepository extends JpaRepository<WaterUsage, Long> {
 
 
 
+    @Query("SELECT w FROM WaterUsage w WHERE w.household.id = :householdId")
+    List<WaterUsage> findByHouseholdId(@Param("householdId") Long householdId);
+
+
+
 }

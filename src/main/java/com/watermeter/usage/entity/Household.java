@@ -25,6 +25,7 @@ public class Household {
 
 
 @OneToMany(mappedBy = "household",cascade = CascadeType.ALL)
+@JsonManagedReference
 private List<WaterUsage> waterUsageList;
 
     public List<WaterUsage> getWaterUsageList() {
@@ -83,6 +84,15 @@ private List<WaterUsage> waterUsageList;
         this.location = location;
     }
 
+
+    public Login getLogin() {
+        return login;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
     @Override
     public String toString() {
         return "Household{" +
@@ -92,6 +102,7 @@ private List<WaterUsage> waterUsageList;
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", location='" + location + '\'' +
+                ", login=" + login +
                 ", waterUsageList=" + waterUsageList +
                 '}';
     }
