@@ -18,26 +18,27 @@ import java.util.List;
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
-private JavaMailSender javaMailSender;
+    private JavaMailSender javaMailSender;
 
+    @Autowired
+    HouseholdRepository householdRepo;
+
+    @Autowired
+    WaterUsesRepository usageRepo;
 
     @Override
-    public void WelcomeMail(String sentTo,String username, String password) {
+    public void WelcomeMail(String sentTo, String username, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("your_email@gmail.com");
         message.setTo(sentTo);
-        message.setSubject("welcome");
-        message.setText("welcome to water meter services \n following are your credentials \n\n Username :" + username + "\npassword: " + password);
+        message.setSubject("Welcome");
+        message.setText("Welcome to water meter services\n" +
+                "Your credentials are as follows:\n\n" +
+                "Username: " + username + "\nPassword: " + password);
         javaMailSender.send(message);
-
     }
 
-
-
-
-
-
-     @Override
+    @Override
     public void sceduledUsedBill(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("your_email@gmail.com");
@@ -47,27 +48,11 @@ private JavaMailSender javaMailSender;
         javaMailSender.send(message);
     }
 
-
-    Household household = new Household();
-
-    @Autowired
-    HouseholdRepository householdRepo;
-
-    @Autowired
-    WaterUsesRepository usageRepo;
-
-
-
-    @Scheduled(cron = "0 0 9 * * *")
-
-//    @Scheduled(cron = "*/10 * * * * *") // Every 10 seconds
-
+    @Scheduled(cron = "0 0 9 * * *") // Every day at 9 AM
     public void sendDailyUsageEmails() {
         List<Household> households = householdRepo.findAll();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime yesterday = now.minusDays(1);
-
-        System.out.println("EMAIn sended/.....!!");
 
         for (Household household : households) {
             List<WaterUsage> usages = usageRepo.findByHousehold(household).stream()
@@ -75,7 +60,7 @@ private JavaMailSender javaMailSender;
                     .toList();
 
             double totalLiters = usages.stream().mapToDouble(WaterUsage::getLitersUsed).sum();
-            double bill = totalLiters * 2.0;
+            double bill = totalLiters * 2.0; // Assuming ₹2 per liter
 
             String message = String.format("""
                 Hello %s,
@@ -94,10 +79,6 @@ private JavaMailSender javaMailSender;
             }
         }
     }
-
-
-
-
 
     @Scheduled(cron = "0 0 9 * * MON") // Every Monday at 9 AM
     public void sendWeeklyUsageEmails() {
@@ -127,11 +108,8 @@ private JavaMailSender javaMailSender;
             """, household.getOwnerName(), totalLiters, bill);
 
             if (household.getEmail() != null) {
-                sceduledUsedBill(
-                        household.getEmail(),
-                        "Your Weekly Water Usage Summary",
-                        message
-                );
+                sceduledUsedBill(household.getEmail(), "Your Weekly Water Usage Summary", message);
             }
         }
-}}
+    }
+}

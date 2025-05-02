@@ -2,11 +2,11 @@ package com.watermeter.usage.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
 public class WaterUsage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +19,6 @@ public class WaterUsage {
     @JoinColumn(name = "household_id")
     @JsonBackReference
     private Household household;
-
 
     public Long getId() {
         return id;
@@ -52,7 +51,6 @@ public class WaterUsage {
     public void setHousehold(Household household) {
         this.household = household;
     }
-
 
     @Override
     public String toString() {

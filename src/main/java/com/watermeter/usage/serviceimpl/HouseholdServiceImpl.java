@@ -22,22 +22,24 @@ import java.util.Random;
 public class HouseholdServiceImpl implements HouseholdService {
 
     private static final Logger log = LoggerFactory.getLogger(HouseholdServiceImpl.class);
+
     @Autowired
-HouseholdRepository householdRepository;
+    private HouseholdRepository householdRepository;
 
-@Autowired
-EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-@Autowired
-    LoginRespository loginRespository;
+    @Autowired
+    private LoginRespository loginRespository;
 
+    @Autowired
+    private WaterUsesRepository waterUsesRepository;
 
     public static String generateEightDigitNumber() {
         Random random = new Random();
         int number = 10000000 + random.nextInt(90000000); // ensures 8 digits
         return String.valueOf(number);
     }
-
 
     @Override
     public Household createHousehold(Household household) {
@@ -47,12 +49,10 @@ EmailService emailService;
         login.setUserName(username);
         login.setRole("household");
         login.setHousehold(household);
-        login.setHousehold(household);
         household.setLogin(login);
         Household saveHousehold = householdRepository.save(household);
-                emailService.WelcomeMail(household.getEmail(),login.getUserName(),login.getPassWord());
+        emailService.WelcomeMail(household.getEmail(), login.getUserName(), login.getPassWord());
         return saveHousehold;
-
     }
 
     @Override
@@ -60,18 +60,11 @@ EmailService emailService;
         return householdRepository.findAll();
     }
 
-
-    @Autowired
-    WaterUsesRepository waterUsesRepository;
-
-@Override
-@Transactional
-public void deleteHousehold(Long id) {
-
-
-    // Then delete the household
-    householdRepository.deleteById(id);
-}
+    @Override
+    @Transactional
+    public void deleteHousehold(Long id) {
+        householdRepository.deleteById(id);
+    }
 
     public ResponseEntity<?> getHouseholdByUsername(String username) {
         Optional<Login> loginOptional = loginRespository.findByUserName(username);
@@ -82,6 +75,4 @@ public void deleteHousehold(Long id) {
             return ResponseEntity.status(404).body("Customer not found for account number: " + username);
         }
     }
-
-
 }

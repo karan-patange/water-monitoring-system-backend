@@ -14,7 +14,6 @@ public class Login {
     private String passWord;
     private String role;
 
-
     @OneToOne
     @JoinColumn(name = "Household_Id", referencedColumnName = "id")
     @JsonBackReference
@@ -23,7 +22,6 @@ public class Login {
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -61,7 +59,6 @@ public class Login {
         this.household = household;
     }
 
-
     @Override
     public String toString() {
         return "Login{" +
@@ -73,4 +70,3 @@ public class Login {
                 '}';
     }
 }
-

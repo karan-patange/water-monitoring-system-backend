@@ -2,11 +2,9 @@ package com.watermeter.usage.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
-
 public class Household {
 
     @Id
@@ -20,29 +18,12 @@ public class Household {
     private String location;
 
     @OneToOne(mappedBy = "household", cascade = CascadeType.ALL)
-    @JsonManagedReference // Allow serialization of this field
+    @JsonManagedReference
     private Login login;
 
-
-@OneToMany(mappedBy = "household",cascade = CascadeType.ALL)
-@JsonManagedReference
-private List<WaterUsage> waterUsageList;
-
-    public List<WaterUsage> getWaterUsageList() {
-        return waterUsageList;
-    }
-
-    public void setWaterUsageList(List<WaterUsage> waterUsageList) {
-        this.waterUsageList = waterUsageList;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<WaterUsage> waterUsageList;
 
     public Long getId() {
         return id;
@@ -76,6 +57,14 @@ private List<WaterUsage> waterUsageList;
         this.mobileNumber = mobileNumber;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -84,13 +73,20 @@ private List<WaterUsage> waterUsageList;
         this.location = location;
     }
 
-
     public Login getLogin() {
         return login;
     }
 
     public void setLogin(Login login) {
         this.login = login;
+    }
+
+    public List<WaterUsage> getWaterUsageList() {
+        return waterUsageList;
+    }
+
+    public void setWaterUsageList(List<WaterUsage> waterUsageList) {
+        this.waterUsageList = waterUsageList;
     }
 
     @Override
